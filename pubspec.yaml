@@ -1,8 +1,8 @@
 name: flutter_bloc_debug
-description: A new Flutter package project.
-version: 0.0.1
-author:
-homepage:
+description: A set of debugger tools for developing an app designed with the BLoC pattern.
+version: 0.0.1-dev
+author: Aloïs Deniel <alois.deniel@outlook.com>
+homepage: https://github.com/aloisdeniel/flutter_bloc_debug
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
 
 dev_dependencies:
+  rxdart:
   flutter_test:
     sdk: flutter
 
