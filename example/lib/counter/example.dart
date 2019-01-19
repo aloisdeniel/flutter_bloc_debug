@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc_debug/flutter_bloc_debug.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
@@ -67,10 +67,15 @@ class CounterExampleState extends State<CounterExample> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocDebugView(
-      title: 'Counter',
-      streams: {'count': bloc.count},
-      sinks: {'add': bloc.add, 'reset': bloc.reset},
-    );
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Counter example"),
+        ),
+        body: Center(child: Text("Open debug drawer from right")),
+        endDrawer: BlocDebugView(
+          title: 'Counter',
+          streams: {'count': bloc.count},
+          sinks: {'add': bloc.add, 'reset': bloc.reset},
+        ));
   }
 }

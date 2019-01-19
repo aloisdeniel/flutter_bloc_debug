@@ -13,10 +13,12 @@ class MapEntryView extends StatelessWidget {
 
   void _openDetail(BuildContext context) {
     Navigator.push(context, MaterialPageRoute(builder: (c) {
-      return Scaffold(
-          appBar: AppBar(title: Text(this.entry.name)),
-          body: DebugRenderers.build(context, this.entry.value,
-              isDetailled: true));
+      return Theme(
+          data: ThemeData.dark(),
+          child: Scaffold(
+              appBar: AppBar(title: Text(this.entry.name)),
+              body: DebugRenderers.build(context, this.entry.value,
+                  isDetailled: true)));
     }));
   }
 
@@ -31,10 +33,16 @@ class MapEntryView extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                (this.entry.wasUpdated ? Icon(Icons.update, size: 14.0, color: Theme.of(context).accentColor) : Container()),
-                Expanded(child:Text(this.entry.name,
-                    style: TextStyle(color: Colors.black, fontSize: 12.0))),
-                 DebugRenderers.build(context, this.entry.value),
+                Padding(
+                  padding: EdgeInsets.only(right: 8.0),
+                  child: (this.entry.wasUpdated
+                      ? Icon(Icons.update, color: Theme.of(context).accentColor)
+                      : Container()),
+                ),
+                Expanded(
+                    child: Text(this.entry.name,
+                        style: Theme.of(context).textTheme.title)),
+                DebugRenderers.build(context, this.entry.value),
               ],
             )),
       ),

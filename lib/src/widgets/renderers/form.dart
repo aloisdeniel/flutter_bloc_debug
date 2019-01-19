@@ -36,7 +36,7 @@ class ValueFieldForm<T> extends StatefulWidget {
 
   @override
   _FormState createState() {
-    return new _FormState();
+    return _FormState();
   }
 }
 

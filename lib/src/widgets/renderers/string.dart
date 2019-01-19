@@ -15,9 +15,11 @@ class StringRenderer extends TypedValueRenderer<String> {
     return Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (c) => Scaffold(
+            builder: (c) => Theme(
+                data: ThemeData.dark(),
+                child: Scaffold(
                     body: ValueFieldForm<String>(
                   parser: (v) => v,
-                ))));
+                )))));
   }
 }

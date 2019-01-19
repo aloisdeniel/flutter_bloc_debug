@@ -45,10 +45,11 @@ class _BlocDebugViewState extends State<BlocDebugView> {
     final previous = this._history.firstWhere((x) => x is StreamHistoryEntry)
         as StreamHistoryEntry;
     this.setState(() {
-      this._history.insert(
-          0,
-          StreamHistoryEntry(this._history.length,
-              UpdateableMap.fromPrevious(previous?.state, update)));
+      this._history = List<HistoryEntry>.from(this._history)
+        ..insert(
+            0,
+            StreamHistoryEntry(this._history.length + 1,
+                UpdateableMap.fromPrevious(previous?.state, update)));
     });
   }
 
@@ -57,9 +58,8 @@ class _BlocDebugViewState extends State<BlocDebugView> {
     super.didUpdateWidget(oldWidget);
 
     var listId = const ListEquality(const IdentityEquality());
-
-    if (listId.equals(oldWidget.streams?.entries?.toList(),
-        widget.streams?.entries?.toList())) {
+    if (!listId.equals(oldWidget.streams?.entries?.map((x) => x.key)?.toList(),
+        widget.streams?.entries?.map((x) => x.key)?.toList())) {
       if (_subscription != null) {
         _unsubscribe();
       }
@@ -92,13 +92,30 @@ class _BlocDebugViewState extends State<BlocDebugView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(this.widget.title ?? "Bloc")),
-      floatingActionButton: SinkFloadingButton(this.widget.sinks),
-      body: ListView(
-        children: this._history,
-      ),
-    );
+    return Theme(
+        data: ThemeData.dark(),
+        child: Drawer(
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                actions: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      final renderers = DebugRenderers.of(context);
+                      showDialog(
+                          context: context,
+                          builder: (c) => DebugRenderers(
+                              renderers: renderers,
+                              child: Dialog(child: SinkMenu(this.widget.sinks))));
+                    },
+                    icon: Icon(Icons.keyboard))
+                ],
+                title: Text(this.widget.title ?? "Bloc"),
+              ),
+              SliverList(delegate: SliverChildListDelegate(this._history)),
+            ],
+          ),
+        ));
   }
 }
 
@@ -109,13 +126,6 @@ class SinkFloadingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final renderers = DebugRenderers.of(context);
-    return FloatingActionButton(
-        child: Icon(Icons.keyboard),
-        onPressed: () => showDialog(
-            context: context,
-            builder: (c) => DebugRenderers(
-                renderers: renderers,
-                child: Dialog(child: SinkMenu(this.sinks)))));
+    return FloatingActionButton(child: Icon(Icons.keyboard), onPressed: () {});
   }
 }

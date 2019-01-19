@@ -23,7 +23,7 @@ class TodoExampleState extends State<TodoExample> {
   TodoExampleState._({@required this.api});
 
   factory TodoExampleState() {
-    final api = ListApi(initial:[
+    final api = ListApi(initial: [
       Todo(true, "already did that"),
       Todo(false, "still have to do that"),
     ]);
@@ -54,10 +54,10 @@ class TodoExampleState extends State<TodoExample> {
   }
 
   @override
-    void initState() {
+  void initState() {
     this.listBloc = TodoListBloc(api);
-      super.initState();
-    }
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -67,8 +67,15 @@ class TodoExampleState extends State<TodoExample> {
 
   @override
   Widget build(BuildContext context) {
-    return DebugRenderers(renderers: [
-      CustomValueRenderer(requester: _requestTodo),
-    ], child: TodoListView(this.listBloc));
+    return DebugRenderers(
+        renderers: [
+          CustomValueRenderer(requester: _requestTodo),
+        ],
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text("Todo example"),
+            ),
+            body: Center(child: Text("Open debug drawer from right")),
+            endDrawer: TodoListView(this.listBloc)));
   }
 }

@@ -10,11 +10,13 @@ class IntRenderer extends TypedValueRenderer<int> {
     return Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (c) => Scaffold(
+            builder: (c) => Theme(
+                data: ThemeData.dark(),
+                child: Scaffold(
                     body: ValueFieldForm<int>(
                   parser: int.parse,
                   keyboardType: TextInputType.number,
-                ))));
+                )))));
 
     //return showDialog<int>(
     //  context: context, builder: (c) => Dialog(child: _Form()));

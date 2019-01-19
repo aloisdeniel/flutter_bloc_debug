@@ -17,7 +17,10 @@ class BoolRenderer extends TypedValueRenderer<bool> {
   @override
   FutureOr<bool> typedRequest(BuildContext context) {
     return Navigator.push(
-        context, MaterialPageRoute(builder: (c) => Scaffold(body: _Form())));
+        context,
+        MaterialPageRoute(
+            builder: (c) =>
+                Theme(data: ThemeData.dark(), child: Scaffold(body: _Form()))));
   }
 }
 

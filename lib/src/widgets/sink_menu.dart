@@ -10,7 +10,9 @@ class SinkMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final entries = this.sinks.entries.toList();
     entries.sort((e1, e2) => e1.key.compareTo(e2.key));
-    return Material(
+    return Theme(
+      data: ThemeData.dark(),
+      child: Material(
         color: Colors.transparent,
         child: SafeArea(
           child: Container(
@@ -18,7 +20,7 @@ class SinkMenu extends StatelessWidget {
               children: entries.map((e) => SinkMenuEntry(e)).toList(),
             ),
           ),
-        ));
+        )));
   }
 }
 
