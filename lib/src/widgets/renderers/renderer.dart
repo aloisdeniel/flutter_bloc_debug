@@ -10,7 +10,7 @@ abstract class ValueRenderer {
 
   Widget build(BuildContext context, dynamic value, bool isDetailled);
 
-  FutureOr<dynamic> request(BuildContext context);
+  FutureOr<dynamic> request(BuildContext context, String name);
 }
 
 class TypedValueRenderer<T> extends ValueRenderer {
@@ -18,12 +18,12 @@ class TypedValueRenderer<T> extends ValueRenderer {
     return typedBuild(context, value as T, isDetailled);
   }
 
-  FutureOr<dynamic> request(BuildContext context) async {
-    return await this.typedRequest(context);
+  FutureOr<dynamic> request(BuildContext context, String name) async {
+    return await this.typedRequest(context, name);
   }
 
   Widget typedBuild(BuildContext context, T value, bool isDetailled) {
-    final widget = ValueText(value?.toString() ?? "");
+    final widget = ValueText(value?.toString() ?? "null");
 
     if (isDetailled) {
       return SingleChildScrollView(
@@ -36,7 +36,7 @@ class TypedValueRenderer<T> extends ValueRenderer {
     return widget;
   }
 
-  FutureOr<T> typedRequest(BuildContext context) => null;
+  FutureOr<T> typedRequest(BuildContext context, String name) => null;
 
   @override
   bool support(dynamic value) {

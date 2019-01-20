@@ -7,11 +7,11 @@ import 'renderer.dart';
 class StringRenderer extends TypedValueRenderer<String> {
   @override
   Widget typedBuild(BuildContext context, String value, bool isDetailled) {
-    return super.typedBuild(context, "\"$value\"", isDetailled);
+    return super.typedBuild(context, value != null ? "\"$value\"" : null, isDetailled);
   }
 
   @override
-  FutureOr<String> typedRequest(BuildContext context) {
+  FutureOr<String> typedRequest(BuildContext context, String name) {
     return Navigator.push(
         context,
         MaterialPageRoute(
@@ -19,6 +19,9 @@ class StringRenderer extends TypedValueRenderer<String> {
                 data: ThemeData.dark(),
                 child: Scaffold(
                     body: ValueFieldForm<String>(
+                  name: name,
+                  hintText: "Enter an string value",
+                  sinkType: "a string",
                   parser: (v) => v,
                 )))));
   }

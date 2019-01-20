@@ -10,9 +10,15 @@ class TodoListBloc {
 
   Stream<List<Todo>> get items => this._items.stream;
 
-  Sink<Todo> get create => this._create.sink;
+  Stream<void> get creationRequested => this._create.stream;
 
-  final PublishSubject<Todo> _create = PublishSubject<Todo>(sync: true);
+  Sink<void> get create => this._create.sink;
+
+  Sink<void> get refresh => this._refresh.sink;
+
+  final PublishSubject<void> _create = PublishSubject<void>(sync: true);
+
+  final PublishSubject<void> _refresh = PublishSubject<void>(sync: true);
 
   Sink<int> get toggle => this._toggle.sink;
 
@@ -28,8 +34,8 @@ class TodoListBloc {
     _items = BehaviorSubject<List<Todo>>(sync: true, seedValue: []);
 
     subscriptions = [
-      this._create.listen(_onCreate),
       this._toggle.listen(_onToggle),
+      this._refresh.listen((_) => _onRefresh()),
     ];
     subjects = [
       this._create,
@@ -37,27 +43,19 @@ class TodoListBloc {
       this._items,
     ];
 
-    this._updateAll();
+    this._onRefresh();
   }
 
-  Future<void> _updateAll() async {
+  Future<void> _onRefresh() async {
     final all = await this._api.all;
     this._items.add(all);
-  }
-
-  Future<void> _onCreate(Todo value) async {
-    if (value != null) {
-      final newItems = List<Todo>.from(this._items.value)..add(value);
-      this._items.add(newItems);
-      await this._api.add(value);
-    }
   }
 
   Future<void> _onToggle(int value) async {
     final todo = this._items.value.elementAt(value);
     final newTodo = await this._api.toggle(todo);
     final newItems = List<Todo>.from(this._items.value)
-      ..replaceRange(value, value, [newTodo]);
+      ..replaceRange(value, value+1, [newTodo]);
     this._items.add(newItems);
   }
 

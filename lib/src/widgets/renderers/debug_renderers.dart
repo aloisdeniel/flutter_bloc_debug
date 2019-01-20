@@ -42,14 +42,14 @@ class DebugRenderers extends InheritedWidget {
     return renderer.build(context, value, isDetailled);
   }
 
-  static Future<dynamic> prompt(BuildContext context, Sink sink) {
+  static Future<dynamic> prompt(BuildContext context, String name, Sink sink) {
     final renderers = of(context);
     var renderer =
         renderers.firstWhere((r) => r.support(sink), orElse: () => null);
     if (renderer == null) {
       renderer = renderer ?? DefaultRenderer();
     }
-    return renderer.request(context);
+    return renderer.request(context, name);
   }
 
   @override

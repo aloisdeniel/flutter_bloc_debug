@@ -14,7 +14,7 @@ class ListRenderer extends TypedValueRenderer<List> {
   }
 
   @override
-  FutureOr<List> typedRequest(BuildContext context) {
+  FutureOr<List> typedRequest(BuildContext context, String name) {
     return null;
   }
 }

@@ -67,15 +67,77 @@ class CounterExampleState extends State<CounterExample> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Counter example"),
-        ),
-        body: Center(child: Text("Open debug drawer from right")),
-        endDrawer: BlocDebugView(
-          title: 'Counter',
-          streams: {'count': bloc.count},
-          sinks: {'add': bloc.add, 'reset': bloc.reset},
-        ));
+    return BlocDebugger(
+      title: 'Counter',
+      streams: {'count': this.bloc.count},
+      sinks: {'add': this.bloc.add, 'reset': this.bloc.reset},
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text("Counter example"),
+          ),
+          body: Counter(this.bloc),
+          endDrawer: BlocDebugDrawer()),
+    );
+  }
+}
+
+class Counter extends StatefulWidget {
+  final CounterBloc bloc;
+
+  Counter(this.bloc);
+
+  @override
+  CounterState createState() {
+    return new CounterState();
+  }
+}
+
+class CounterState extends State<Counter> {
+  double _addValue = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<int>(
+        stream: widget.bloc.count,
+        builder: (c, s) {
+          if (!s.hasData) {
+            return Text("no data");
+          }
+
+          return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Count: ${s.data}",
+                    style: Theme.of(context).textTheme.display1),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Slider(
+                        value: _addValue,
+                        onChanged: (v) {
+                          this.setState(() {
+                            _addValue = v;
+                          });
+                        },
+                        min: 1.0,
+                        max: 5.0,
+                        divisions: 4,
+                      ),
+                      RaisedButton(
+                        child: Text("Add $_addValue"),
+                        onPressed: () {
+                          this.widget.bloc.add.add(this._addValue.toInt());
+                        },
+                      ),
+                      RaisedButton(
+                        child: Text("Reset"),
+                        onPressed: () {
+                          this.widget.bloc.reset.add(null);
+                        },
+                      ),
+                    ]),
+              ]);
+        });
   }
 }

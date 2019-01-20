@@ -1,6 +1,6 @@
 name: flutter_bloc_debug
 description: A set of debugger tools for developing an app designed with the BLoC pattern.
-version: 0.1.0-dev
+version: 0.2.0-dev
 author: Aloïs Deniel <alois.deniel@outlook.com>
 homepage: https://github.com/aloisdeniel/flutter_bloc_debug
 

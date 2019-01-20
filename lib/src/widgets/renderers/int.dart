@@ -6,7 +6,7 @@ import 'renderer.dart';
 
 class IntRenderer extends TypedValueRenderer<int> {
   @override
-  FutureOr<int> typedRequest(BuildContext context) {
+  FutureOr<int> typedRequest(BuildContext context, String name) {
     return Navigator.push(
         context,
         MaterialPageRoute(
@@ -14,6 +14,9 @@ class IntRenderer extends TypedValueRenderer<int> {
                 data: ThemeData.dark(),
                 child: Scaffold(
                     body: ValueFieldForm<int>(
+                  name: name,
+                  hintText: "Enter an integer value",
+                  sinkType: "an int",
                   parser: int.parse,
                   keyboardType: TextInputType.number,
                 )))));

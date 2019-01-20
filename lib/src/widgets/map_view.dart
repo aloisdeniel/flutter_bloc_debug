@@ -8,19 +8,19 @@ class UpdateableMap {
 
   UpdateableMap(Map<String, dynamic> initial)
       : this.lastUpdate = DateTime.now(),
-        this.properties = initial
-            .entries
-            .map((e) => UpdateableProperty(e.key, e.value, true))
-            .toList()..sort((e1,e2) => e1.name.compareTo(e2.name));
+        this.properties = initial.entries
+                  .map((e) => UpdateableProperty(e.key, e.value, true)).toList();
 
   UpdateableMap.fromPrevious(
       UpdateableMap previous, Map<String, dynamic> update)
       : this.lastUpdate = DateTime.now(),
-        this.properties = previous.properties.map((old) {
-          return update.containsKey(old.name)
-                  ? UpdateableProperty(old.name, update[old.name], true)
-                  : UpdateableProperty(old.name, old.value, false);
-        }).toList();
+        this.properties = previous.properties
+            .where((old) => !update.containsKey(old.name))
+            .map((old) => old.copyWith(wasUpdated: false))
+            .toList()
+              ..addAll(update.entries
+                  .map((e) => UpdateableProperty(e.key, e.value, true)))
+              ..sort((x1, x2) => x1.name.compareTo(x2.name));
 }
 
 class UpdateableProperty {
@@ -28,17 +28,27 @@ class UpdateableProperty {
   final bool wasUpdated;
   final dynamic value;
   UpdateableProperty(this.name, this.value, this.wasUpdated);
+
+  UpdateableProperty copyWith({String name, dynamic value, bool wasUpdated}) {
+    return UpdateableProperty(
+        name ?? this.name, value ?? this.value, wasUpdated ?? this.wasUpdated);
+  }
 }
 
 class MapView extends StatelessWidget {
   final Widget header;
-
+  final bool areUpdateIconsVisible;
   final UpdateableMap map;
-
+  final MapEntrySize entrySize;
   final MapPropertyTapped onPropertyTap;
 
   MapView(
-      {@required this.header, @required this.map, this.onPropertyTap, Key key})
+      {@required this.header,
+      this.entrySize = MapEntrySize.small,
+      @required this.map,
+      this.areUpdateIconsVisible = true,
+      this.onPropertyTap,
+      Key key})
       : super(key: key);
 
   Iterable<Widget> _createChildren(BuildContext context) sync* {
@@ -46,7 +56,9 @@ class MapView extends StatelessWidget {
       yield this.header;
     }
     for (var entry in this.map.properties) {
-      yield MapEntryView(entry);
+      yield MapEntryView(entry,
+          size: this.entrySize,
+          isUpdateIconVisible: this.areUpdateIconsVisible);
     }
   }
 
@@ -54,9 +66,7 @@ class MapView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: DividedColumn(
-        children: _createChildren(context)
-            .map((w) => w)
-            .toList(),
+        children: _createChildren(context).map((w) => w).toList(),
       ),
     );
   }

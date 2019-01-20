@@ -16,7 +16,7 @@ class MapRenderer extends TypedValueRenderer<Map<String,dynamic>> {
     return ListView.separated(
       itemCount: value.length,
       separatorBuilder: (c,i) => Divider(),
-      itemBuilder: (c,i) => MapEntryView(UpdateableProperty(entries[i].key, entries[i].value, false)),
+      itemBuilder: (c,i) => MapEntryView(UpdateableProperty(entries[i].key, entries[i].value, false), isUpdateIconVisible: false,),
     );
   }
 
@@ -26,7 +26,7 @@ class MapRenderer extends TypedValueRenderer<Map<String,dynamic>> {
   }
 
   @override
-  FutureOr<Map<String,dynamic>> typedRequest(BuildContext context) {
+  FutureOr<Map<String,dynamic>> typedRequest(BuildContext context, String name) {
     return null;
   }
 }

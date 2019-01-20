@@ -6,40 +6,31 @@ class SinkMenu extends StatelessWidget {
 
   SinkMenu(this.sinks);
 
-  @override
-  Widget build(BuildContext context) {
+  Iterable<PopupMenuEntry<MapEntry<String, Sink<dynamic>>>> _buildItems(
+      BuildContext context) sync* {
     final entries = this.sinks.entries.toList();
-    entries.sort((e1, e2) => e1.key.compareTo(e2.key));
-    return Theme(
-      data: ThemeData.dark(),
-      child: Material(
-        color: Colors.transparent,
-        child: SafeArea(
-          child: Container(
-            child: ListView(
-              children: entries.map((e) => SinkMenuEntry(e)).toList(),
-            ),
-          ),
-        )));
-  }
-}
 
-class SinkMenuEntry extends StatelessWidget {
-  final MapEntry<String, Sink<dynamic>> entry;
-  SinkMenuEntry(this.entry);
+    yield PopupMenuItem(
+      enabled: false,
+      child: Text("Sinks", style: TextStyle(fontSize: 12)));
+
+    yield PopupMenuDivider();
+
+    yield* entries.map((e) => PopupMenuItem<MapEntry<String, Sink<dynamic>>>(
+          value: e,
+          child: ListTile(title: Text(e.key)),
+        ));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(10.0),
-        child: RaisedButton(
-          child: Text(this.entry.key),
-          onPressed: () async {
-            final value =
-                await DebugRenderers.prompt(context, this.entry.value);
-            this.entry.value.add(value);
-            Navigator.pop(context);
-          },
-        ));
+    return PopupMenuButton<MapEntry<String, Sink<dynamic>>>(
+      onSelected: (MapEntry<String, Sink<dynamic>> entry) async {
+        final value =
+            await DebugRenderers.prompt(context, entry.key, entry.value);
+        entry.value.add(value);
+      },
+      itemBuilder: (BuildContext context) => _buildItems(context).toList(),
+    );
   }
 }

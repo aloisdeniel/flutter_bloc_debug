@@ -15,16 +15,18 @@ class BoolRenderer extends TypedValueRenderer<bool> {
   }
 
   @override
-  FutureOr<bool> typedRequest(BuildContext context) {
+  FutureOr<bool> typedRequest(BuildContext context, String name) {
     return Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (c) =>
-                Theme(data: ThemeData.dark(), child: Scaffold(body: _Form()))));
+            builder: (c) => Theme(
+                data: ThemeData.dark(), child: Scaffold(body: _Form(name)))));
   }
 }
 
 class _Form extends StatefulWidget {
+  final String name;
+  _Form(this.name);
   @override
   _FormState createState() => _FormState();
 }
@@ -35,6 +37,8 @@ class _FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     return ValueForm(
+      name: this.widget.name,
+      sinkType: "a bool",
       body: Switch(
         value: this.isChecked,
         onChanged: (c) {

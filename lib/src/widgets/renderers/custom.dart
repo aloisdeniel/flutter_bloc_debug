@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'renderer.dart';
 
-typedef FutureOr<T> TypedRequester<T>(BuildContext context);
+typedef FutureOr<T> TypedRequester<T>(BuildContext context, String name);
 
 class CustomValueRenderer<T> extends TypedValueRenderer<T> {
   final TypedRequester<T> requester;
@@ -11,7 +11,7 @@ class CustomValueRenderer<T> extends TypedValueRenderer<T> {
   CustomValueRenderer({@required this.requester});
 
   @override
-  FutureOr<T> typedRequest(BuildContext context) {
-    return requester(context);
+  FutureOr<T> typedRequest(BuildContext context, name) {
+    return requester(context, name);
   }
 }

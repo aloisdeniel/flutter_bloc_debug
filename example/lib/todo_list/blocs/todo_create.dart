@@ -6,6 +6,7 @@ import 'package:rxdart/rxdart.dart';
 import '../model/todo.dart';
 
 class TodoCreateBloc {
+  final Api api;
 
   Stream<String> get title => this._title.stream;
 
@@ -19,7 +20,7 @@ class TodoCreateBloc {
 
   Sink<void> get create => this._create.sink;
 
-  Stream<Todo> get created => this._created.stream;
+  Stream<void> get created => this._created.stream;
 
   final BehaviorSubject<String> _title =
       BehaviorSubject<String>(sync: true, seedValue: "My new task!");
@@ -27,7 +28,7 @@ class TodoCreateBloc {
   final BehaviorSubject<bool> _isChecked =
       BehaviorSubject<bool>(sync: true, seedValue: false);
 
-  final PublishSubject<Todo> _created = PublishSubject<Todo>(
+  final PublishSubject<void> _created = PublishSubject<void>(
     sync: true,
   );
 
@@ -43,7 +44,7 @@ class TodoCreateBloc {
 
   List<Subject> subjects;
 
-  TodoCreateBloc() {
+  TodoCreateBloc(this.api) {
     subscriptions = [
       this._create.listen((_) => _onCreate()),
       this._toggle.listen((_) => _onToggle()),
@@ -55,12 +56,13 @@ class TodoCreateBloc {
     ];
   }
 
-  void _onCreate() {
-      this._created.add(Todo(this._isChecked.value, this._title.value));
+  void _onCreate() async {
+    await this.api.add(Todo(this._isChecked.value, this._title.value));
+    this._created.add(null);
   }
 
   void _onToggle() {
-      this._isChecked.add(!this._isChecked.value);
+    this._isChecked.add(!this._isChecked.value);
   }
 
   @mustCallSuper
